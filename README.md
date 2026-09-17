@@ -34,13 +34,13 @@
 - unknowns
 - assumptions
 
-它强调不把客户兴趣直接当成正式需求，也不会仅凭技术常识替客户创造需求。
+重点：不把客户的兴趣直接当成正式需求，也不仅凭技术常识替客户创造需求。
 
 ### 2. Product Search Agent
 
 根据 Customer State，从 `products.json` 中检索相关产品能力。
 
-它只负责“找产品证据”，不负责设计架构，也不能使用产品知识库之外的能力。
+只负责“找产品证据”，不负责设计架构，也不能使用产品知识库之外的能力。
 
 ### 3. Solution Matching Agent
 
@@ -54,7 +54,7 @@
 - 必要假设
 - 方案理由
 
-它只能使用 Product Search 已经返回的产品及能力。
+只能使用 Product Search 已经返回的产品及能力。
 
 ### 4. Verification Agent
 
@@ -92,7 +92,7 @@ Supervisor 只负责路由，不负责重新分析客户需求或设计方案。
 - open questions
 - customer statements
 
-它不会把客户兴趣自动转换成方案决策。
+不会把客户兴趣自动转换成方案决策。
 
 ### 7. Research Agent
 
@@ -112,12 +112,12 @@ Supervisor 只负责路由，不负责重新分析客户需求或设计方案。
 ### Requirement Update
 
 位于 `agents/requirement.py`。
-它根据 Meeting Record 增量更新已有 Customer State，保留有效历史信息，并记录可能出现的冲突。
+根据 Meeting Record 增量更新已有 Customer State，保留有效历史信息，并记录可能出现的冲突。
 
 ### Solution Correction
 
 位于 `agents/solution.py`。
-当 Verification 发现候选方案存在问题时，它根据验证意见修改原方案，而不是从零开始创造一个新 Agent。
+当 Verification 发现候选方案存在问题时，根据验证意见修改原方案。
 
 
 ## 四、目录结构
@@ -178,8 +178,6 @@ workflow/
 
 ### `harness/`
 
-Harness 是 Agent 和底层执行能力之间的辅助层。
-
 用于实验或验证更标准化的执行方式，例如：
 
 - 统一组织 Agent 运行上下文。
@@ -205,15 +203,13 @@ Harness 是 Agent 和底层执行能力之间的辅助层。
 utils/output.py
 ```
 
-它负责打印 Requirement、Product Search、Solution、Verification 和 Workflow State 的终端摘要。
+负责打印 Requirement、Product Search、Solution、Verification 和 Workflow State 的终端摘要。
 
 ## 六、根目录文件
 
 ### `main.py`
 
-现在的 `main.py` 是轻量启动入口。
-
-它负责：
+负责：
 
 - 导入 `workflow.runner.run_workflow`
 - 保留部分旧函数名的兼容导出
@@ -241,7 +237,7 @@ utils/output.py
 - 去掉可能存在的 Markdown JSON 代码块。
 - 将文本解析为 Python 字典或列表。
 
-它是所有 Agent 共用的模型调用层。
+是所有 Agent 共用的模型调用层。
 
 ### `product_loader.py`
 
@@ -251,15 +247,7 @@ utils/output.py
 
 ### `test_harness.py`
 
-用于独立验证 Harness 和 Tools 的调用关系。
-
-它不是正式业务入口，不会替代：
-
-```text
-python main.py
-```
-
-可以把它理解为 Harness 实验层的测试程序。
+用于独立验证 Harness 和 Tools 的调用关系，是Harness实验层的测试程序。
 
 ## 七、Workflow State
 
