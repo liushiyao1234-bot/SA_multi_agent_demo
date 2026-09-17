@@ -123,11 +123,10 @@ Supervisor 只负责路由，不负责重新分析客户需求或设计方案。
 ## 四、目录结构
 
 ```text
-SA_multi_agent_demo-260820/
+SA_multi_agent_demo/
 │
 ├── agents/                 # 7 个正式 Agent 及两个辅助模式
 ├── harness/                # Agent 执行与工具调用实验层
-├── legacy/                 # 重构前的单文件版本
 ├── tools/                  # 可被 Harness 或 Agent 调用的工具
 ├── utils/                  # 通用辅助功能，例如终端输出
 ├── workflow/               # State、Trigger 和主流程编排
@@ -136,10 +135,7 @@ SA_multi_agent_demo-260820/
 ├── llm.py                  # GLM API 调用和 JSON 解析
 ├── main.py                 # 程序启动入口与兼容接口
 ├── product_loader.py       # 加载产品知识库
-├── products.json           # 本地产品能力数据
 ├── test_harness.py         # Harness 与 Tool 调用测试入口
-├── requirements.txt        # Python 依赖
-├── .env                    # 本地 API Key，不应提交 Git
 ├── .env.example            # 环境变量示例
 ├── .gitignore
 └── README.md
@@ -179,38 +175,23 @@ workflow/
 - `trigger.py`：判断应该从哪个 Agent 重新开始，并执行 stale 重算循环。
 - `runner.py`：串联整个端到端流程。
 
-可以简单理解为：
-
-```text
-agents/ 决定每个角色怎么工作
-workflow/ 决定这些角色何时工作
-```
 
 ### `harness/`
 
 Harness 是 Agent 和底层执行能力之间的辅助层。
 
-它用于实验或验证更标准化的执行方式，例如：
+用于实验或验证更标准化的执行方式，例如：
 
 - 统一组织 Agent 运行上下文。
 - 管理 Agent 可以使用的工具。
 - 让 Agent 调用普通 Python 工具，而不是把所有逻辑写进 Prompt。
 - 为后续增加日志、权限、重试和执行追踪提供扩展位置。
 
-Harness 不代表新增了一个业务 Agent，它更接近 Agent 的“运行框架”。
-
 当前主业务流程仍以 `workflow/runner.py` 为核心；Harness 属于独立的工程化实验部分。
 
 ### `tools/`
 
 存放可以被 Harness 或 Agent 调用的普通工具。
-
-工具与 Agent 的区别是：
-
-```text
-Agent：负责理解、判断和决策
-Tool：负责执行确定性的具体动作
-```
 
 例如读取产品知识、查询数据或进行格式处理，更适合做成 Tool，而不是再创造一个 Agent。
 
@@ -226,37 +207,17 @@ utils/output.py
 
 它负责打印 Requirement、Product Search、Solution、Verification 和 Workflow State 的终端摘要。
 
-### `legacy/`
-
-保存重构前的 1498 行单文件版本：
-
-```text
-legacy/main_single_file.py
-```
-
-该文件仅作为历史备份和逻辑对照，不再是正式启动入口。
-
-如果新旧行为出现差异，可以用它检查重构过程中是否遗漏了原始逻辑。
-
-### `__pycache__/`
-
-这是 Python 自动生成的字节码缓存。
-
-它不属于项目源码，可以安全删除；下次运行 Python 时还会自动生成，也不应该提交到 Git。
-
 ## 六、根目录文件
 
 ### `main.py`
 
-现在的 `main.py` 只是轻量启动入口。
+现在的 `main.py` 是轻量启动入口。
 
 它负责：
 
 - 导入 `workflow.runner.run_workflow`
 - 保留部分旧函数名的兼容导出
 - 在直接运行时启动完整工作流
-
-正式业务逻辑已经不再堆积在 `main.py` 中。
 
 ### `config.py`
 
@@ -287,12 +248,6 @@ legacy/main_single_file.py
 负责读取根目录下的 `products.json`。
 
 使用独立 loader 后，即使从其他工作目录启动程序，也可以根据项目路径正确找到产品知识库。
-
-### `products.json`
-
-本地产品能力知识库。
-
-Product Search Agent 只能根据这里提供的能力进行匹配，不能依赖模型记忆随意补充产品能力。
 
 ### `test_harness.py`
 
@@ -521,4 +476,4 @@ python test_harness.py
 - 生产级错误恢复。
 - 完整的 Agent 自主 Tool Calling 循环。
 
-因此，它更适合作为多 Agent 流程和工程结构的学习、演示与实验项目。
+因此更适合作为多 Agent 流程和工程结构的学习、演示与实验项目。
